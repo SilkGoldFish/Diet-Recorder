@@ -1,9 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, View, Text, Button, Modal } from "react-native";
+import { NewRecordList } from '../components';
 
 const postURL = "https://sirusw.pythonanywhere.com/api/record/"
 
-function NewRecord({ recordVisible, setRecordVisible, record }) {
+function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
+
+  let NewRecord = [
+    { name: 'aaa', type: 'breakfast', qty: 0, calories: 0, duration: 0 },
+    { name: 'bbb', type: 'lunch', qty: 0, calories: 0, duration: 0 },
+    { name: 'ccc', type: 'dinner', qty: 0, calories: 0, duration: 0 }]
+  const date = new Date();
+  const d = date.toLocaleDateString();
+  const t = date.toLocaleTimeString();
+  for (let i = 0; i < NewRecord.length; i++) {
+    NewRecord[i].date = d;
+    NewRecord[i].time = t;
+    NewRecord[i].user = 1;
+    NewRecord[i].quantity = NewRecord[i].qty;
+  }
+  record = NewRecord;
 
   function cancel() {
     setRecordVisible(false)
@@ -24,36 +40,8 @@ function NewRecord({ recordVisible, setRecordVisible, record }) {
     console.log(result);
   }
 
-  const ItemView = ({ item }) => {
-
-    return (
-      <View style={styles.item}>
-        <Text style={styles.text}>Name: {item.name}</Text>
-        <Text style={styles.text}>Date: {item.date}</Text>
-        <Text style={styles.text}>Time: {item.time}</Text>
-        <Text style={styles.text}>Type: {item.type}</Text>
-        <Text style={styles.text}>Calories: {item.calories}</Text>
-        <Text style={styles.text}>Quantity: {item.quantity}</Text>
-        <Text style={styles.text}>Duration: {item.duration}</Text>
-      </View>
-
-    );
-  };
-
-  const ItemSeparatorView = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
-    );
-  };
-
   return (
-    <Modal
+<Modal
       animationType="fade"
       visible={recordVisible}
       transparent={true}
@@ -61,62 +49,35 @@ function NewRecord({ recordVisible, setRecordVisible, record }) {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={styles.flatListContainer}>
-            <FlatList
-              data={record}
-              keyExtractor={(item, index) => index.toString()}
-              ItemSeparatorComponent={ItemSeparatorView}
-              enableEmptySections={true}
-              renderItem={ItemView}
-            />
+            <NewRecordList data={record} refreshing={false} loadUserData={()=>{}}/>
           </View>
           <View style={styles.container}>
-            <View style={styles.buttonContainer}>
-              <Button style={styles.button} title={'cancel'} onPress={cancel} />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button style={styles.button} title={'submit'} onPress={submit} />
-            </View>
+              <Button title={'cancel'} onPress={cancel} />
+              <Button title={'submit'} onPress={submit} />
           </View>
         </View>
       </View>
     </Modal>
+    
   );
 }
 
 const styles = StyleSheet.create({
   centeredView: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalView: {
-    height: '70%',
-    width: '70%',
+    height:'90%',
     backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
     alignItems: 'center',
   },
   flatListContainer: {
-    height: '80%'
-  },
-  button: {
-
+    flex:1
   },
   container: {
-    height: '20%',
-    padding: 20,
-    justifyContent:'center'
-  },
-  buttonContainer: {
-    margin: 10,
-  },
-  item: {
-    margin: 10,
-  },
-  text: {
-    fontSize: 15,
-    padding: 2,
+    padding: 30,
+    justifyContent: 'center'
   },
 });
 

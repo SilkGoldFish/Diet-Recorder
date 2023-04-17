@@ -7,7 +7,7 @@ const recordURL = 'http://192.168.1.180:8080/accounts/login';
 const gptURL = "https://sirusw.pythonanywhere.com/chat/";
 
 
-const AddRecord = ({ modalVisible, setModalVisible }) => {
+const AddRecord = ({ modalVisible, setModalVisible,userId }) => {
 
   const [recording, setRecording] = useState();
   const [isLoading, setLoading] = useState(false);
@@ -100,21 +100,6 @@ const AddRecord = ({ modalVisible, setModalVisible }) => {
       const NewRecord = JSON.parse(result.response.choices[0].message.content);
        */
     try {
-      let NewRecord = [
-        { name: 'aaa', type: 'breakfast', qty: 0, calories: 0, duration: 0 },
-        { name: 'bbb', type: 'lunch', qty: 0, calories: 0, duration: 0 },
-        { name: 'ccc', type: 'dinner', qty: 0, calories: 0, duration: 0 }]
-      const date = new Date();
-      const d = date.toLocaleDateString();
-      const t = date.toLocaleTimeString();
-      for (let i = 0; i < NewRecord.length; i++) {
-        NewRecord[i].date = d;
-        NewRecord[i].time = t;
-        NewRecord[i].user = 1;
-        NewRecord[i].quantity = NewRecord[i].qty;
-      }
-      console.log(NewRecord);
-
       setRecord(NewRecord);
       setLoading(false);
       setModalVisible(false);
@@ -128,7 +113,7 @@ const AddRecord = ({ modalVisible, setModalVisible }) => {
 
   return (
     <>
-      <NewRecord record={reocrd} recordVisible={recordVisible} setRecordVisible={setRecordVisible} />
+      <NewRecord record={reocrd} recordVisible={recordVisible} setRecordVisible={setRecordVisible} userId={userId}/>
 
       <Modal
         animationType="fade"

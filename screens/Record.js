@@ -8,20 +8,34 @@ import {
   View,
   RefreshControl,
 } from 'react-native';
+import { RecordList, Search, Calorie } from '../components';
 
-const Record = () => {
+const Record = ({ route }) => {
+
+  const userId = route.params.userId;
+
   const [refreshing, setRefreshing] = useState(true);
   const [userData, setUserData] = useState([]);
+
+
+  let d = new Date().toLocaleDateString().split('/')
+  d[2] = '20' + d[2]
+  d = d[2] + '-' + d[0] + '-' + d[1]
+  const [date, setDate] = useState(d)
+
   useEffect(() => {
     loadUserData();
-  }, []);
+  }, [date]);
 
   const loadUserData = () => {
-    fetch('https://sirusw.pythonanywhere.com/api/record')
+    setRefreshing(true);
+    console.log(date)
+    fetch('https://sirusw.pythonanywhere.com/api/record/?user_id=' + userId + '&date=' + date)
       .then((response) => response.json())
       .then((responseJson) => {
         setRefreshing(false);
         const newdata = responseJson;
+        console.log(newdata)
         setUserData(newdata);
       })
       .catch((error) => {
@@ -29,57 +43,13 @@ const Record = () => {
       });
   };
 
-  const ItemView = ({ item }) => {
-
-    return (
-      <View>
-        <Text style={styles.text}>Name: {item.name}</Text>
-        <Text style={styles.text}>Date: {item.date}</Text>
-        <Text style={styles.text}>Time: {item.time}</Text>
-        <Text style={styles.text}>Type: {item.type}</Text>
-        <Text style={styles.text}>Calories: {item.calories}</Text>
-        <Text style={styles.text}>Quantity: {item.quantity}</Text>
-        <Text style={styles.text}>Duration: {item.duration}</Text>
-
-      </View>
-
-    );
-  };
-
-  const ItemSeparatorView = () => {
-    return (
-      <View
-        style={{
-          height: 1,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
-    );
-  };
-
   return (
-    <SafeAreaView style={{ flex: 1, marginTop: 10 }}>
-      {refreshing ? <ActivityIndicator /> : null}
-      <FlatList
-        data={userData}
-        keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={ItemSeparatorView}
-        enableEmptySections={true}
-        renderItem={ItemView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={loadUserData} />
-        }
-      />
+    <SafeAreaView>
+      <Search date={date} setDate={setDate} loadUserData={loadUserData} />
+      <Calorie data={userData} userId={userId} />
+      <RecordList data={userData} refreshing={refreshing} loadUserData={loadUserData} />
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 20,
-    padding: 5,
-  },
-});
 
 export default Record;

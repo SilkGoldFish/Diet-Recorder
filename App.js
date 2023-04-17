@@ -2,20 +2,36 @@ import React, { useState } from 'react';
 import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { AddRecord, Profile, Record } from './screens/index';
+import { AddRecord, Profile, Record, Login, Register } from './screens/index';
 import { MaterialIcons } from '@expo/vector-icons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 const App = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const HomeScreen = ({route}) => {
+
+  const {userId} = route.params;
 
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
-    <NavigationContainer>
-
+    <>
       <Tab.Navigator>
-        <Tab.Screen name="Record" component={Record}
+        <Tab.Screen name="Record" component={Record} initialParams={{userId:userId}}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="receipt-long" color={color} size={24
@@ -46,14 +62,15 @@ const App = () => {
             ),
           }}
         />
-        <Tab.Screen name="Profile" component={Profile} options={{
+        <Tab.Screen name="Profile" component={Profile} initialParams={{userId:userId}} options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="person" color={color} size={24} />
           ),
         }} />
       </Tab.Navigator>
-      <AddRecord modalVisible={modalVisible} setModalVisible={setModalVisible} />
-    </NavigationContainer>
+      <AddRecord modalVisible={modalVisible} setModalVisible={setModalVisible} userId={userId}/>
+
+    </>
 
   );
 };

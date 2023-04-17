@@ -1,59 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet, ActivityIndicator, Button, Modal } from "react-native";
+import { Person, Update } from '../components/index'
 
-const placesURL = "https://sirusw.pythonanywhere.com/api/profile/1";
-export default function Record() {
+export default function Profile({ navigation, route }) {
+
+  const userId = route.params.userId;
+
   const [isLoading, setLoading] = useState(true);
-  const [places, setPlaces] = useState({});
+  const [profile, setProfile] = useState({});
+  const [showUpdate, setShowUpdate] = useState(false);
 
   const getPlaces = async () => {
-    try {
-      const response = await fetch(placesURL);
-      const result = await response.json();
-      const newPlaces = result;
-      setPlaces(newPlaces);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
+    fetch('https://sirusw.pythonanywhere.com/api/profile/' + userId)
+      .then((response) => response.json())
+      .then((responseJson) => {
+        const newdata = responseJson;
+        setLoading(false)
+
+        setProfile(newdata)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   useEffect(() => {
     getPlaces();
   }, []);
 
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text> Searching places.... </Text>
-      </View>
-    );
-  }
   return (
-    <View style={styles.container}>
+    <>
+      {isLoading ? <ActivityIndicator /> : <>
+        <Person data={profile} />
+        <Update setShowUpdate={setShowUpdate} showUpdate={showUpdate} /></>
+      }
+      <View style={styles.buttonContainer}>
+        <Button title='edit profile' onPress={() => { setShowUpdate(true) }} />
+        <Button title='log out' onPress={() => navigation.navigate('Login')} />
 
-      <Text style={styles.text}>First Name: {places.firstname}</Text>
-      <Text style={styles.text}>Last Name: {places.lastname}</Text>
-      <Text style={styles.text}>Date of Birth: {places.date_of_birth}</Text>
-      <Text style={styles.text}>Gender: {places.gender}</Text>
-      <Text style={styles.text}>Weight: {places.weight}</Text>
-      <Text style={styles.text}>Height: {places.height}</Text>
-      <Text style={styles.text}>Weight Goal: {places.weight_goal}</Text>
-      <Button title='edit profile' />
-      <Button title='log out' />
-    </View>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  text: {
-    fontSize: 20
+  buttonContainer: {
+    flex: 1
   }
 });
