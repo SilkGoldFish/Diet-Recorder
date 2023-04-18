@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, Modal, Pressable, ActivityIndicator, FlatList } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native';
 import { Audio } from 'expo-av';
 import NewRecord from './NewRecord';
+import { CustomButton } from '../components';
 
-const recordURL = 'http://192.168.1.180:8080/accounts/login';
+const recordURL = 'http://192.168.1.180:8080/accounts/audio';
 const gptURL = "https://sirusw.pythonanywhere.com/chat/";
 
-
-const AddRecord = ({ modalVisible, setModalVisible,userId }) => {
+const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
 
   const [recording, setRecording] = useState();
   const [isLoading, setLoading] = useState(false);
@@ -56,7 +56,7 @@ const AddRecord = ({ modalVisible, setModalVisible,userId }) => {
     setLoading(true);
     console.log('Stopping recording..');
     await recording.stopAndUnloadAsync();
-    /*
+    
     async function uploadAudioAsync(uri) {
       console.log("Uploading " + uri);
       let apiUrl = recordURL;
@@ -68,7 +68,7 @@ const AddRecord = ({ modalVisible, setModalVisible,userId }) => {
         name: `recording.${fileType}`,
         type: `audio/x-${fileType}`,
       });
-    
+
       let options = {
         method: 'POST',
         body: formData,
@@ -85,36 +85,34 @@ const AddRecord = ({ modalVisible, setModalVisible,userId }) => {
     let response = await uploadAudioAsync(uri);
     let result = await response.json();
     console.log(result)
-    
-    try {  
+
+    try {
       response = await fetch(gptURL, {
-      method:'POST',
-      body:JSON.stringify(result),
-      headers: {
-        'Accept' : 'application/json',
-        'Content-Type' : 'application/json',
-      }
+        method: 'POST',
+        body: JSON.stringify(result),
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
       })
       result = await response.json()
-      console.log(result)
-      const NewRecord = JSON.parse(result.response.choices[0].message.content);
-       */
-    try {
-      setRecord(NewRecord);
+      const newRecord = JSON.parse(result.response.choices[0].message.content);
+      
+      setRecord(newRecord);
       setLoading(false);
       setModalVisible(false);
       setRecordVisible(true);
 
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      alert("The server is busy. Please try again!");
     }
   }
 
+
   return (
     <>
-      <NewRecord record={reocrd} recordVisible={recordVisible} setRecordVisible={setRecordVisible} userId={userId}/>
-
+      <NewRecord record={reocrd} recordVisible={recordVisible} setRecordVisible={setRecordVisible} userId={userId} />
       <Modal
         animationType="fade"
         transparent={true}
@@ -124,26 +122,12 @@ const AddRecord = ({ modalVisible, setModalVisible,userId }) => {
         }}
       >
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <View style={styles.container}>
-              <Button style={styles.button}
-                title={recording ? 'Stop Recording' : 'Start Recording'}
-                onPress={recording ? stopRecording : startRecording}
-              />
-            </View>
+          <View style={[styles.modalView, styles.shadow]}>
+            <CustomButton title={recording ? 'Stop Recording' : 'Start Recording'} onPress={recording ? stopRecording : startRecording} />
             {isLoading ? <ActivityIndicator /> : null}
-            <View style={styles.container}>
-
-              <Button
-                style={styles.button}
-                title='Hide Modal'
-                onPress={() => { setModalVisible(false), setLoading(false) }}
-              >
-              </Button>
-            </View>
+            <CustomButton title='Cancel' onPress={() => { setModalVisible(false), setLoading(false) }} />
           </View>
         </View>
-
       </Modal>
     </>
 
@@ -164,12 +148,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
   },
-  container: {
-    margin: 10,
-  },
-  button: {
-    borderRadius: 10,
-  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  }
 
 });
 

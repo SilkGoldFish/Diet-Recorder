@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, Modal, Pressable, ActivityIndicator, FlatList, RefreshControl } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native';
 
-
-export default function RecordList({ data, refreshing, loadUserData}) {
+export default function RecordList({ data, refreshing, loadUserData }) {
 
     const Item = ({ title, value }) => {
         return (
             <View style={styles.item}>
-                <View style={styles.textLeft}>
-                    <Text style={styles.text}>{title}</Text>
-
-                </View>
-                <View style={styles.textRight}>
-                    <Text style={styles.text}>{value}</Text>
-
-                </View>
-
+                <Text style={styles.text}>{title}</Text>
+                <Text style={styles.text}>{value}</Text>
             </View>
         );
     }
@@ -48,10 +40,10 @@ export default function RecordList({ data, refreshing, loadUserData}) {
         );
     };
 
-
     return (
         <FlatList
             data={data}
+            style={styles.list}
             keyExtractor={(item, index) => index.toString()}
             ItemSeparatorComponent={ItemSeparatorView}
             enableEmptySections={true}
@@ -63,32 +55,28 @@ export default function RecordList({ data, refreshing, loadUserData}) {
     );
 }
 
-
 const styles = StyleSheet.create({
     item: {
         flexDirection: 'row',
-        borderWidth: 1,
-        borderRadius:10
+        borderRadius: 10,
     },
     container: {
         flex: 1,
         backgroundColor: 'white',
         alignItems: 'center',
         padding: 10,
-        margin: 10
+        margin: 20,
+        borderRadius: 20
     },
     text: {
-        fontSize: 18,
+        flex: 1,
+        padding: 5,
+        fontSize: 15,
         textAlign: 'center',
 
     },
-    textLeft: {
-        flex:1,
-        borderRightWidth:1,
-        padding:5,
-    },
-    textRight: {
-        flex:1,
-        padding:5
+    list: {
+        marginBottom:90
     }
+
 });

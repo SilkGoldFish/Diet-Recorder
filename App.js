@@ -6,7 +6,6 @@ import { AddRecord, Profile, Record, Login, Register } from './screens/index';
 import { MaterialIcons } from '@expo/vector-icons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
@@ -22,16 +21,16 @@ const App = () => {
   );
 }
 
-const HomeScreen = ({route}) => {
+const HomeScreen = ({ route }) => {
 
-  const {userId} = route.params;
+  const { userId } = route.params;
 
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <>
       <Tab.Navigator>
-        <Tab.Screen name="Record" component={Record} initialParams={{userId:userId}}
+        <Tab.Screen name="Record" component={Record} initialParams={{ userId: userId }}
           options={{
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="receipt-long" color={color} size={24
@@ -62,16 +61,14 @@ const HomeScreen = ({route}) => {
             ),
           }}
         />
-        <Tab.Screen name="Profile" component={Profile} initialParams={{userId:userId}} options={{
+        <Tab.Screen name="Profile" component={Profile} initialParams={{ userId: userId }} options={{
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="person" color={color} size={24} />
           ),
         }} />
       </Tab.Navigator>
-      <AddRecord modalVisible={modalVisible} setModalVisible={setModalVisible} userId={userId}/>
-
+      <AddRecord modalVisible={modalVisible} setModalVisible={setModalVisible} userId={userId} />
     </>
-
   );
 };
 

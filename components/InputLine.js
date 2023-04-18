@@ -1,21 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text,TextInput, View, Modal, Pressable, ActivityIndicator, FlatList } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 
-export default function InputLine({text}) {
+export default function InputLine({ text, value, onChange }) {
+
     return (
         <View style={styles.inputLine}>
-          <Text>{text}</Text>
-          <TextInput style={styles.input}/>
+            <Text style={styles.text}>{text}</Text>
+            <TextInput style={styles.input} defaultValue={value} onChangeText={onChange} />
         </View>
-      )
+    )
 }
 
 const styles = StyleSheet.create({
     inputLine: {
-        flexDirection:'row'
+        flexDirection: 'row',
+        margin: 10,
+        paddingHorizontal: 20
     },
     input: {
-        borderWidth:1
+        flex: 1,
+        borderWidth: 1,
+        borderColor: 'grey',
+        borderRadius: 10,
+        textAlign: 'center'
+    },
+    text: {
+        flex: 1,
+        textAlign: 'center',
+        fontSize: 15
     }
 })

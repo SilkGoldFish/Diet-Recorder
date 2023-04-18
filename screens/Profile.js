@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, ActivityIndicator, Button, Modal } from "react-native";
-import { Person, Update } from '../components/index'
+import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { CustomButton, Person, Update } from '../components/index'
 
 export default function Profile({ navigation, route }) {
 
@@ -10,13 +10,12 @@ export default function Profile({ navigation, route }) {
   const [profile, setProfile] = useState({});
   const [showUpdate, setShowUpdate] = useState(false);
 
-  const getPlaces = async () => {
+  const getProfile = async () => {
     fetch('https://sirusw.pythonanywhere.com/api/profile/' + userId)
       .then((response) => response.json())
       .then((responseJson) => {
         const newdata = responseJson;
         setLoading(false)
-
         setProfile(newdata)
       })
       .catch((error) => {
@@ -25,26 +24,23 @@ export default function Profile({ navigation, route }) {
   };
 
   useEffect(() => {
-    getPlaces();
+    getProfile();
   }, []);
 
   return (
     <>
-      {isLoading ? <ActivityIndicator /> : <>
-        <Person data={profile} />
-        <Update setShowUpdate={setShowUpdate} showUpdate={showUpdate} /></>
-      }
-      <View style={styles.buttonContainer}>
-        <Button title='edit profile' onPress={() => { setShowUpdate(true) }} />
-        <Button title='log out' onPress={() => navigation.navigate('Login')} />
-
+      <Update data={profile} setShowUpdate={setShowUpdate} showUpdate={showUpdate} setData={setProfile} />
+      {isLoading ? <ActivityIndicator /> : <><Person data={profile} /></>}
+      <View style={styles.container}>
+        <CustomButton title='edit profile' onPress={() => { setShowUpdate(true) }} />
+        <CustomButton title='log out' onPress={() => { alert("Log out successfully!"); navigation.navigate('Login') }} />
       </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    flex: 1
+  container: {
+    marginBottom: 25
   }
 });

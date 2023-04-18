@@ -1,84 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import { FlatList, StyleSheet, View, Text, Button, Modal } from "react-native";
+import React from 'react';
+import { StyleSheet, View, Modal } from "react-native";
 import { NewRecordList } from '../components';
-
-const postURL = "https://sirusw.pythonanywhere.com/api/record/"
+import { CustomButton } from '../components';
 
 function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
 
-  let NewRecord = [
-    { name: 'aaa', type: 'breakfast', qty: 0, calories: 0, duration: 0 },
-    { name: 'bbb', type: 'lunch', qty: 0, calories: 0, duration: 0 },
-    { name: 'ccc', type: 'dinner', qty: 0, calories: 0, duration: 0 }]
+  let newRecord = JSON.parse(JSON.stringify(record))
+
   const date = new Date();
-  const d = date.toLocaleDateString();
+  let d = new Date().toLocaleDateString().split('/')
+  d[2] = '20' + d[2]
+  d = d[2] + '-' + d[0] + '-' + d[1]
+
   const t = date.toLocaleTimeString();
-  for (let i = 0; i < NewRecord.length; i++) {
-    NewRecord[i].date = d;
-    NewRecord[i].time = t;
-    NewRecord[i].user = 1;
-    NewRecord[i].quantity = NewRecord[i].qty;
+  for (let i = 0; i < newRecord.length; i++) {
+    newRecord[i].type = newRecord[i].type.toLowerCase();
+    newRecord[i].date = d;
+    newRecord[i].time = t;
+    newRecord[i].user = userId;
+    newRecord[i].quantity = newRecord[i].qty;
   }
-  record = NewRecord;
 
   function cancel() {
     setRecordVisible(false)
   }
 
-  async function submit() {
-    setRecordVisible(false)
-    //post request to add the record
-    let response = await fetch(postURL, {
+  const submit = () => {
+    console.log(newRecord)
+    let postURL = "https://sirusw.pythonanywhere.com/api/record/";
+    if (newRecord.length > 1) {
+      postURL += 'create_multiple/';
+      newRecord = { "records": newRecord }
+    } else {
+      newRecord = newRecord[0];
+    }
+
+    fetch(postURL, {
       method: 'POST',
-      body: JSON.stringify(record),
+      body: JSON.stringify(newRecord),
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       }
     })
-    let result = await response.json()
-    console.log(result);
-  }
+      .then((response) => response.json())
+      .then((responseJson) => {
+        setRecordVisible(false)
+        alert("Submit successfully!")
+        console.log(responseJson)
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
-<Modal
+    <Modal
       animationType="fade"
       visible={recordVisible}
       transparent={true}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View style={styles.flatListContainer}>
-            <NewRecordList data={record} refreshing={false} loadUserData={()=>{}}/>
-          </View>
-          <View style={styles.container}>
-              <Button title={'cancel'} onPress={cancel} />
-              <Button title={'submit'} onPress={submit} />
-          </View>
+        <View style={[styles.modalView, styles.shadow]}>
+          <NewRecordList data={newRecord} />
+          <CustomButton title='cancel' onPress={cancel} />
+          <CustomButton title='submit' onPress={submit} />
         </View>
       </View>
     </Modal>
-    
+
   );
 }
 
 const styles = StyleSheet.create({
   centeredView: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalView: {
-    height:'90%',
+    height: '90%',
     backgroundColor: 'white',
     alignItems: 'center',
+    width: '80%',
+    borderRadius: 20
   },
-  flatListContainer: {
-    flex:1
-  },
-  container: {
-    padding: 30,
-    justifyContent: 'center'
-  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  }
 });
 
 export default NewRecord;

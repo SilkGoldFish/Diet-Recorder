@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
-  ActivityIndicator,
-  FlatList,
-  Text,
-  View,
-  RefreshControl,
+  SafeAreaView
 } from 'react-native';
 import { RecordList, Search, Calorie } from '../components';
 
@@ -14,13 +8,12 @@ const Record = ({ route }) => {
 
   const userId = route.params.userId;
 
-  const [refreshing, setRefreshing] = useState(true);
-  const [userData, setUserData] = useState([]);
-
-
   let d = new Date().toLocaleDateString().split('/')
   d[2] = '20' + d[2]
   d = d[2] + '-' + d[0] + '-' + d[1]
+
+  const [refreshing, setRefreshing] = useState(true);
+  const [userData, setUserData] = useState([]);
   const [date, setDate] = useState(d)
 
   useEffect(() => {
@@ -29,13 +22,11 @@ const Record = ({ route }) => {
 
   const loadUserData = () => {
     setRefreshing(true);
-    console.log(date)
     fetch('https://sirusw.pythonanywhere.com/api/record/?user_id=' + userId + '&date=' + date)
       .then((response) => response.json())
       .then((responseJson) => {
         setRefreshing(false);
         const newdata = responseJson;
-        console.log(newdata)
         setUserData(newdata);
       })
       .catch((error) => {
@@ -45,7 +36,7 @@ const Record = ({ route }) => {
 
   return (
     <SafeAreaView>
-      <Search date={date} setDate={setDate} loadUserData={loadUserData} />
+      <Search date={date} setDate={setDate} />
       <Calorie data={userData} userId={userId} />
       <RecordList data={userData} refreshing={refreshing} loadUserData={loadUserData} />
     </SafeAreaView>

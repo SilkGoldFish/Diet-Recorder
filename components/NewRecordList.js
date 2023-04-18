@@ -1,21 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Button, StyleSheet, Text, View, Modal, Pressable, ActivityIndicator, FlatList, RefreshControl } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
 
-
-export default function NewRecordList({ data, refreshing, loadUserData}) {
+export default function NewRecordList({ data }) {
 
     const Item = ({ title, value }) => {
         return (
             <View style={styles.item}>
-                <View style={styles.textLeft}>
-                    <Text style={styles.text}>{title}</Text>
-
-                </View>
-                <View style={styles.textRight}>
-                    <Text style={styles.text}>{value}</Text>
-
-                </View>
-
+                <Text style={styles.text}>{title}</Text>
+                <Text style={styles.text}>{value}</Text>
             </View>
         );
     }
@@ -48,7 +40,6 @@ export default function NewRecordList({ data, refreshing, loadUserData}) {
         );
     };
 
-
     return (
         <FlatList
             data={data}
@@ -56,16 +47,23 @@ export default function NewRecordList({ data, refreshing, loadUserData}) {
             ItemSeparatorComponent={ItemSeparatorView}
             enableEmptySections={true}
             renderItem={ItemView}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={loadUserData} />
-            }
         />
     );
 }
 
-
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: '100%'
+    },
     item: {
-        flexDirection:'row'
+        flexDirection: 'row',
+        width: '100%',
+        margin: 5,
+    },
+    text: {
+        fontSize: 15,
+        width: '50%',
+        textAlign: 'center'
     }
 });
