@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  SafeAreaView
-} from 'react-native';
+import { View } from 'react-native';
 import { RecordList, Search, Calorie } from '../components';
 
 const Record = ({ route }) => {
 
   const userId = route.params.userId;
-
   let d = new Date().toLocaleDateString().split('/')
   d[2] = '20' + d[2]
   d = d[2] + '-' + d[0] + '-' + d[1]
@@ -25,9 +22,9 @@ const Record = ({ route }) => {
     fetch('https://sirusw.pythonanywhere.com/api/record/?user_id=' + userId + '&date=' + date)
       .then((response) => response.json())
       .then((responseJson) => {
-        setRefreshing(false);
         const newdata = responseJson;
         setUserData(newdata);
+        setRefreshing(false);
       })
       .catch((error) => {
         console.error(error);
@@ -35,11 +32,11 @@ const Record = ({ route }) => {
   };
 
   return (
-    <SafeAreaView>
+    <View>
       <Search date={date} setDate={setDate} />
       <Calorie data={userData} userId={userId} />
       <RecordList data={userData} refreshing={refreshing} loadUserData={loadUserData} />
-    </SafeAreaView>
+    </View>
   );
 };
 

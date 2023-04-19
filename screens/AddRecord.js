@@ -4,7 +4,7 @@ import { Audio } from 'expo-av';
 import NewRecord from './NewRecord';
 import { CustomButton } from '../components';
 
-const recordURL = 'http://192.168.1.180:8080/accounts/audio';
+const recordURL = 'http://192.168.1.181:8080/accounts/audio';
 const gptURL = "https://sirusw.pythonanywhere.com/chat/";
 
 const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
@@ -22,11 +22,10 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-
       console.log('Starting recording..');
       const { recording } = await Audio.Recording.createAsync({
         android: {
-          extension: '.m4a',
+          extension: '.wav',
           outputFormat: 2,
           audioEncoder: 3,
           sampleRate: 44100,
@@ -56,7 +55,6 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
     setLoading(true);
     console.log('Stopping recording..');
     await recording.stopAndUnloadAsync();
-    
     async function uploadAudioAsync(uri) {
       console.log("Uploading " + uri);
       let apiUrl = recordURL;
@@ -68,7 +66,6 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
         name: `recording.${fileType}`,
         type: `audio/x-${fileType}`,
       });
-
       let options = {
         method: 'POST',
         body: formData,
@@ -80,13 +77,11 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
       console.log("POSTing " + uri + " to " + apiUrl);
       return fetch(apiUrl, options);
     }
-
     let uri = recording.getURI();
-    let response = await uploadAudioAsync(uri);
-    let result = await response.json();
-    console.log(result)
-
     try {
+      let response = await uploadAudioAsync(uri);
+      let result = await response.json();
+      console.log(result)
       response = await fetch(gptURL, {
         method: 'POST',
         body: JSON.stringify(result),
@@ -97,18 +92,17 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
       })
       result = await response.json()
       const newRecord = JSON.parse(result.response.choices[0].message.content);
-      
+      console.log(newRecord)
       setRecord(newRecord);
       setLoading(false);
       setModalVisible(false);
       setRecordVisible(true);
-
     } catch (error) {
+      console.log(error)
       setLoading(false);
       alert("The server is busy. Please try again!");
     }
   }
-
 
   return (
     <>

@@ -25,7 +25,7 @@ function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
     setRecordVisible(false)
   }
 
-  const submit = () => {
+  const submit = async () => {
     console.log(newRecord)
     let postURL = "https://sirusw.pythonanywhere.com/api/record/";
     if (newRecord.length > 1) {
@@ -34,7 +34,6 @@ function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
     } else {
       newRecord = newRecord[0];
     }
-
     fetch(postURL, {
       method: 'POST',
       body: JSON.stringify(newRecord),

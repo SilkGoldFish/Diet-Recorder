@@ -3,17 +3,14 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function Calorie({ data, userId }) {
     const [calorie, setCalorie] = useState(0);
-    const [count, setCount] = useState(0);
-    const calculateCalorie = () => {
-        let cnt = 0;
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].type == 'sports') {
-                cnt -= data[i].calories
-            } else {
-                cnt += data[i].calories
-            }
+
+    let cnt = 0;
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].type == 'sports') {
+            cnt -= data[i].calories
+        } else {
+            cnt += data[i].calories
         }
-        setCount(cnt)
     }
 
     const loadCalorie = () => {
@@ -31,11 +28,6 @@ export default function Calorie({ data, userId }) {
                 console.error(error);
             });
     };
-
-    useEffect(() => {
-        calculateCalorie();
-    }, [data]);
-
     useEffect(() => {
         loadCalorie();
     }, [])
@@ -43,7 +35,7 @@ export default function Calorie({ data, userId }) {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Target Calorie: {calorie}</Text>
-            <Text style={styles.text}>Already Calorie: {count}</Text>
+            <Text style={styles.text}>Already Calorie: {cnt}</Text>
         </View>
     );
 }

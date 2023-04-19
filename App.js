@@ -73,4 +73,3 @@ const HomeScreen = ({ route }) => {
 };
 
 export default App;
-

@@ -28,19 +28,18 @@ export default function Profile({ navigation, route }) {
   }, []);
 
   return (
-    <>
-      <Update data={profile} setShowUpdate={setShowUpdate} showUpdate={showUpdate} setData={setProfile} />
-      {isLoading ? <ActivityIndicator /> : <><Person data={profile} /></>}
-      <View style={styles.container}>
-        <CustomButton title='edit profile' onPress={() => { setShowUpdate(true) }} />
-        <CustomButton title='log out' onPress={() => { alert("Log out successfully!"); navigation.navigate('Login') }} />
-      </View>
-    </>
+    <View style={styles.container}>
+      <Update data={profile} setShowUpdate={setShowUpdate} showUpdate={showUpdate} setData={setProfile} userId={userId} />
+      {isLoading ? <ActivityIndicator /> : <Person data={profile} />}
+      <CustomButton title='edit profile' onPress={() => { setShowUpdate(true) }} />
+      <CustomButton title='log out' onPress={() => { alert("Log out successfully!"); navigation.navigate('Login') }} />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 25
+    marginBottom: 25,
+    flex: 1
   }
 });

@@ -15,14 +15,13 @@ export default function NewRecordList({ data }) {
     const ItemView = ({ item }) => {
         return (
             <View style={styles.container}>
-                <Item title='name' value={item.name} />
-                <Item title='date' value={item.date} />
-                <Item title='time' value={item.time} />
-                <Item title='type' value={item.type} />
-                <Item title='calories' value={item.calories} />
-                <Item title='quantity' value={item.quantity} />
-                <Item title='duration' value={item.duration} />
-                <Item title='description' value={item.description} />
+                <Item title='name:' value={item.name} />
+                <Item title='date:' value={item.date} />
+                <Item title='time:' value={item.time} />
+                <Item title='type:' value={item.type} />
+                <Item title='calories:' value={item.calories} />
+                <Item title='quantity:' value={item.quantity} />
+                <Item title='duration:' value={item.duration} />
             </View>
 
         );

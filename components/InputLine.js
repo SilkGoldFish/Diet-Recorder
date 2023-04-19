@@ -1,13 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 
-
-export default function InputLine({ text, value, onChange }) {
+export default function InputLine({ text, value, onChange, secureTextEntry }) {
 
     return (
         <View style={styles.inputLine}>
             <Text style={styles.text}>{text}</Text>
-            <TextInput style={styles.input} defaultValue={value} onChangeText={onChange} />
+            <TextInput style={styles.input} defaultValue={value} onChangeText={onChange} secureTextEntry={secureTextEntry} />
         </View>
     )
 }
