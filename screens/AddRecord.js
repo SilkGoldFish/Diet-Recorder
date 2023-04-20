@@ -4,9 +4,6 @@ import { Audio } from 'expo-av';
 import NewRecord from './NewRecord';
 import { CustomButton } from '../components';
 
-const recordURL = 'http://192.168.1.181:8080/accounts/audio';
-const gptURL = "https://sirusw.pythonanywhere.com/chat/";
-
 const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
 
   const [recording, setRecording] = useState();
@@ -25,7 +22,7 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
       console.log('Starting recording..');
       const { recording } = await Audio.Recording.createAsync({
         android: {
-          extension: '.wav',
+          extension: '.m4a',
           outputFormat: 2,
           audioEncoder: 3,
           sampleRate: 44100,
@@ -57,11 +54,11 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
     await recording.stopAndUnloadAsync();
     async function uploadAudioAsync(uri) {
       console.log("Uploading " + uri);
-      let apiUrl = recordURL;
+      let apiUrl = "https://sirusw.pythonanywhere.com/transcribe/";
       let uriParts = uri.split('.');
       let fileType = uriParts[uriParts.length - 1];
       let formData = new FormData();
-      formData.append('file', {
+      formData.append('audio', {
         uri,
         name: `recording.${fileType}`,
         type: `audio/x-${fileType}`,
@@ -81,18 +78,7 @@ const AddRecord = ({ modalVisible, setModalVisible, userId }) => {
     try {
       let response = await uploadAudioAsync(uri);
       let result = await response.json();
-      console.log(result)
-      response = await fetch(gptURL, {
-        method: 'POST',
-        body: JSON.stringify(result),
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        }
-      })
-      result = await response.json()
-      const newRecord = JSON.parse(result.response.choices[0].message.content);
-      console.log(newRecord)
+      const newRecord = JSON.parse(result.transcription.choices[0].message.content);
       setRecord(newRecord);
       setLoading(false);
       setModalVisible(false);

@@ -1,8 +1,9 @@
-import React from 'react';
-import { StyleSheet, Text, View, FlatList, RefreshControl } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import { UserContext } from '../UserContext';
 
-export default function RecordList({ data, refreshing, loadUserData }) {
-
+export default function RecordList() {
+    const { data } = useContext(UserContext)
     const Item = ({ title, value }) => {
         return (
             <View style={styles.item}>
@@ -47,9 +48,6 @@ export default function RecordList({ data, refreshing, loadUserData }) {
             ItemSeparatorComponent={ItemSeparatorView}
             enableEmptySections={true}
             renderItem={ItemView}
-            refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={loadUserData} />
-            }
         />
     );
 }

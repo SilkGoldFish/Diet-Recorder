@@ -39,6 +39,7 @@ export default function Register({ navigation }) {
         setUsername('')
         setPassword('')
         setPasswordAgain('')
+        navigation.goBack()
       } else {
         alert(data.message + '!')
       }

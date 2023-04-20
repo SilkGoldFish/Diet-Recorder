@@ -30,7 +30,6 @@ export default function Login({ navigation }) {
       const data = await response.json();
       setLoading(false)
       if (response.ok) {
-        console.log('Login successful:', data);
         navigation.navigate('Home', {
           userId: data.user_id
         })

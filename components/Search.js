@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button, StyleSheet, View, TextInput } from 'react-native';
+import { UserContext } from '../UserContext';
 
 const Input = ({ value, onChange }) => {
     return (
@@ -9,14 +10,25 @@ const Input = ({ value, onChange }) => {
     );
 }
 
-export default function Search({ date, setDate }) {
-    const d = date.split('-')
-    const [year, setYear] = useState(d[0]);
-    const [month, setMonth] = useState(d[1]);
-    const [day, setDay] = useState(d[2]);
+export default function Search() {
+    const { user, setData } = useContext(UserContext)
+    let date = new Date().toLocaleDateString().split('/')
+    date[2] = '20' + date[2]
+
+    const [year, setYear] = useState(date[2]);
+    const [month, setMonth] = useState(date[0]);
+    const [day, setDay] = useState(date[1]);
 
     const searchByDate = () => {
-        setDate(year + '-' + month + '-' + day)
+        const date = year + '-' + month + '-' + day
+        fetch('https://sirusw.pythonanywhere.com/api/record/?user_id=' + user.id + '&date=' + date)
+            .then((response) => response.json())
+            .then((responseJson) => {
+                setData(responseJson);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
     }
 
     return (

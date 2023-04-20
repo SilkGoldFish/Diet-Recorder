@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, View, Modal } from "react-native";
 import { NewRecordList } from '../components';
 import { CustomButton } from '../components';
+import { UserContext } from '../UserContext';
 
 function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
+  const { setData } = useContext(UserContext)
 
   let newRecord = JSON.parse(JSON.stringify(record))
 
@@ -26,7 +28,6 @@ function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
   }
 
   const submit = async () => {
-    console.log(newRecord)
     let postURL = "https://sirusw.pythonanywhere.com/api/record/";
     if (newRecord.length > 1) {
       postURL += 'create_multiple/';
@@ -44,9 +45,9 @@ function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
     })
       .then((response) => response.json())
       .then((responseJson) => {
+        setData(oldData => [...oldData, responseJson])
         setRecordVisible(false)
         alert("Submit successfully!")
-        console.log(responseJson)
       })
       .catch((error) => {
         console.error(error);

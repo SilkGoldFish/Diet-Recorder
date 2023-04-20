@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, View, Modal, ActivityIndicator } from 'react-native';
 import InputLine from './InputLine';
 import CustomButton from './CustomButton';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { UserContext } from '../UserContext';
 
-export default function Update({ data, setData, showUpdate, setShowUpdate, userId }) {
+export default function Update({ showUpdate, setShowUpdate }) {
+    const { user, setUser } = useContext(UserContext)
     const [loading, setLoading] = useState(false)
 
-    let profile = JSON.parse(JSON.stringify(data))
+    let profile = JSON.parse(JSON.stringify(user))
 
     const submit = async () => {
         setLoading(true)
@@ -18,7 +20,7 @@ export default function Update({ data, setData, showUpdate, setShowUpdate, userI
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    user_id: userId,
+                    user_id: profile.id,
                     ...profile,
                 }),
             });
@@ -27,7 +29,7 @@ export default function Update({ data, setData, showUpdate, setShowUpdate, userI
             if (response.ok) {
                 alert('Profile updated successfully!')
                 setShowUpdate(false)
-                setData(profile)
+                setUser(profile)
             } else {
                 alert('Profile update failed: ', data.message, '!')
             }
@@ -49,7 +51,7 @@ export default function Update({ data, setData, showUpdate, setShowUpdate, userI
                     <InputLine text='Age' value={String(profile.age)} onChange={(text) => profile.age = text} />
                     <InputLine text='Weight' value={profile.weight} onChange={(text) => profile.weight = text} />
                     <InputLine text='Height' value={profile.height} onChange={(text) => profile.height = text} />
-                    <InputLine text='Weight Goal' value={profile.weight_goal} onChange={(text) => profile.weightGoal = text} />
+                    <InputLine text='Weight Goal' value={profile.weight_goal} onChange={(text) => profile.weight_goal = text} />
                     {loading ? <ActivityIndicator /> : null}
                     <CustomButton title='Cancel' onPress={() => { setShowUpdate(false) }} />
                     <CustomButton title='Submit' onPress={submit} />

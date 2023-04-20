@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { UserContext } from '../UserContext';
 
-export default function Calorie({ data, userId }) {
+export default function Calorie() {
+    const { user, data } = useContext(UserContext)
     const [calorie, setCalorie] = useState(0);
 
     let cnt = 0;
@@ -14,23 +16,20 @@ export default function Calorie({ data, userId }) {
     }
 
     const loadCalorie = () => {
-        fetch('https://sirusw.pythonanywhere.com/api/profile/' + userId)
-            .then((response) => response.json())
-            .then((responseJson) => {
-                const newdata = responseJson;
-                if (newdata.gender == 'M') {
-                    setCalorie(Math.floor(1000 * (66.5 + 13.8 * Number(newdata.weight_goal) + 5 * Number(newdata.height)) / (6.8 * Number(newdata.age))));
-                } else {
-                    setCalorie(Math.floor(1000 * (655.1 + 9.6 * Number(newdata.weight_goal) + 1.9 * Number(newdata.height)) / (4.7 * Number(newdata.age))));
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    };
+        if (Number(user.age) == 0) {
+            setCalorie(0)
+            return;
+        }
+        if (user.gender == 'M') {
+            setCalorie(Math.floor(1000 * (66.5 + 13.8 * Number(user.weight_goal) + 5 * Number(user.height)) / (6.8 * Number(user.age))));
+        } else {
+            setCalorie(Math.floor(1000 * (655.1 + 9.6 * Number(user.weight_goal) + 1.9 * Number(user.height)) / (4.7 * Number(user.age))));
+        }
+    }
+
     useEffect(() => {
         loadCalorie();
-    }, [])
+    }, [user])
 
     return (
         <View style={styles.container}>

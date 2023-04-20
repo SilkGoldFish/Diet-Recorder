@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { UserContext } from '../UserContext';
 
-export default function Person({ data }) {
+export default function Person() {
+
+    const { user } = useContext(UserContext)
 
     const Line = ({ title, value }) => {
         return (
@@ -21,14 +24,14 @@ export default function Person({ data }) {
                     uri: 'https://i.redd.it/v7k1yoflgpl61.jpg',
                 }}
             />
-            <Line title='First Name:' value={data.firstname} />
-            <Line title='Last Name:' value={data.lastname} />
-            <Line title='Date of Birth:' value={data.date_of_birth} />
-            <Line title='Gender:' value={data.gender} />
-            <Line title='Age:' value={data.age} />
-            <Line title='Weight:' value={data.weight} />
-            <Line title='Height:' value={data.height} />
-            <Line title='Weight Goal:' value={data.weight_goal} />
+            <Line title='First Name:' value={user.firstname} />
+            <Line title='Last Name:' value={user.lastname} />
+            <Line title='Date of Birth:' value={user.date_of_birth} />
+            <Line title='Gender:' value={user.gender} />
+            <Line title='Age:' value={user.age} />
+            <Line title='Weight:' value={user.weight} />
+            <Line title='Height:' value={user.height} />
+            <Line title='Weight Goal:' value={user.weight_goal} />
         </View>
     );
 }
