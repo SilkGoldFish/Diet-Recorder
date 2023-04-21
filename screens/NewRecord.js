@@ -45,7 +45,11 @@ function NewRecord({ recordVisible, setRecordVisible, record, userId }) {
     })
       .then((response) => response.json())
       .then((responseJson) => {
-        setData(oldData => [...oldData, responseJson])
+        if (record.length > 1) {
+          setData(oldData => oldData.concat(responseJson))
+        } else {
+          setData(oldData => [...oldData, responseJson])
+        }
         setRecordVisible(false)
         alert("Submit successfully!")
       })

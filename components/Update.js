@@ -46,7 +46,7 @@ export default function Update({ showUpdate, setShowUpdate }) {
                 <View style={[styles.container, styles.shadow]}>
                     <InputLine text='First Name' value={profile.firstname} onChange={(text) => profile.firstname = text} />
                     <InputLine text='Last Name' value={profile.lastname} onChange={(text) => profile.lastname = text} />
-                    <InputLine text='Date of Birth' value={profile.date_of_birth} onChange={(text) => profile.dateOfBirth = text} />
+                    <InputLine text='Date of Birth' value={profile.date_of_birth} onChange={(text) => profile.date_of_birth = text} />
                     <InputLine text='Gender' value={profile.gender} onChange={(text) => profile.gender = text} />
                     <InputLine text='Age' value={String(profile.age)} onChange={(text) => profile.age = text} />
                     <InputLine text='Weight' value={profile.weight} onChange={(text) => profile.weight = text} />
