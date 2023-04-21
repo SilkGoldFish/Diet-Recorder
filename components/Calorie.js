@@ -21,9 +21,9 @@ export default function Calorie() {
             return;
         }
         if (user.gender == 'M') {
-            setCalorie(Math.floor(1000 * (66.5 + 13.8 * Number(user.weight_goal) + 5 * Number(user.height)) / (6.8 * Number(user.age))));
+            setCalorie(Math.floor(66.5 + 13.75 * Number(user.weight_goal) + 5.003 * Number(user.height) - 6.75 * Number(user.age)));
         } else {
-            setCalorie(Math.floor(1000 * (655.1 + 9.6 * Number(user.weight_goal) + 1.9 * Number(user.height)) / (4.7 * Number(user.age))));
+            setCalorie(Math.floor(655.1 + 9.563 * Number(user.weight_goal) + 1.85 * Number(user.height) - 4.676 * Number(user.age)));
         }
     }
 
